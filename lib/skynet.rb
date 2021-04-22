@@ -1,6 +1,6 @@
 require "sia_skynet/version"
 
-module SiaSkynet
+module Skynet
   class Error < StandardError; end
   # Your code goes here...
 end

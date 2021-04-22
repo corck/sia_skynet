@@ -2,7 +2,7 @@ require_relative 'lib/sia_skynet/version'
 
 Gem::Specification.new do |spec|
   spec.name          = "sia_skynet"
-  spec.version       = SiaSkynet::VERSION
+  spec.version       = Skynet::VERSION
   spec.authors       = ["Christoph Klocker"]
   spec.email         = ["christoph@vedanova.com"]
 
