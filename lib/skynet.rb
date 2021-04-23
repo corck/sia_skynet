@@ -1,4 +1,4 @@
-require "sia_skynet/version"
+require "skynet/version"
 
 module Skynet
   class Error < StandardError; end

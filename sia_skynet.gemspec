@@ -1,4 +1,4 @@
-require_relative 'lib/sia_skynet/version'
+require_relative 'lib/skynet/version'
 
 Gem::Specification.new do |spec|
   spec.name          = "sia_skynet"
@@ -6,17 +6,17 @@ Gem::Specification.new do |spec|
   spec.authors       = ["Christoph Klocker"]
   spec.email         = ["christoph@vedanova.com"]
 
-  spec.summary       = %q{TODO: Write a short summary, because RubyGems requires one.}
-  spec.description   = %q{TODO: Write a longer description or delete this line.}
-  spec.homepage      = "TODO: Put your gem's website or public repo URL here."
+  spec.summary       = %q{Skynet client to interact with Sia Skynet}
+  spec.description   = %q{Skynet is a decentralized storage solution built on the Sia blockchain}
+  spec.homepage      = "https://siasky.net"
   spec.license       = "MIT"
   spec.required_ruby_version = Gem::Requirement.new(">= 2.3.0")
 
-  spec.metadata["allowed_push_host"] = "TODO: Set to 'http://mygemserver.com'"
+  spec.metadata["allowed_push_host"] = "http://rubygems.org"
 
   spec.metadata["homepage_uri"] = spec.homepage
-  spec.metadata["source_code_uri"] = "TODO: Put your gem's public repo URL here."
-  spec.metadata["changelog_uri"] = "TODO: Put your gem's CHANGELOG.md URL here."
+  spec.metadata["source_code_uri"] = "https://github.com/corck/sia_skynet"
+  #spec.metadata["changelog_uri"] = "https://github.com/corck/sia_skynet"
 
   # Specify which files should be added to the gem when it is released.
   # The `git ls-files -z` loads the files in the RubyGem that have been added into git.

@@ -1,5 +1,5 @@
 require "bundler/setup"
-require "sia_skynet"
+require "skynet"
 
 RSpec.configure do |config|
   # Enable flags like --only-failures and --next-failure
