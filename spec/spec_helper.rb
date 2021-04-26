@@ -2,6 +2,8 @@
 
 require 'bundler/setup'
 require 'skynet'
+require 'webmock/rspec'
+require 'rspec/json_expectations'
 
 RSpec.configure do |config|
   # Enable flags like --only-failures and --next-failure
@@ -12,5 +14,12 @@ RSpec.configure do |config|
 
   config.expect_with :rspec do |c|
     c.syntax = :expect
+  end
+
+  config.before(:each) do
+    stub_request(:any, /siasky.net/)
+      .to_return(status: 200, body: '{"skylink":"KAA54bKo-YqFRj345xGXdo9h15k84K8zl7ykrKw8kQyksQ",
+        "merkleroot":"39e1b2a8f98a854630f1471345768f61d7993ce0af3397bca4acac3c910ca4b1",
+        "bitfield":40}')
   end
 end

@@ -13,3 +13,8 @@ group :test, :development do
   gem 'rubocop'
   gem 'rubocop-rspec'
 end
+
+group :test do
+  gem "webmock"
+  gem 'rspec-json_expectations'
+end
