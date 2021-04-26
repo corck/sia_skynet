@@ -22,7 +22,16 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: Write usage instructions here
+### Uploading to a Skynet portal
+
+Uploading a single file:
+
+    client = Skynet::Client.new
+    client.upload_file '/path/to/file.pdf'
+
+Uploading a directory:
+
+    TODO
 
 ## Development
 

@@ -50,9 +50,20 @@ module Skynet
     # @option custom_opts [String] :custom_dirname Custom dirname. If this is empty,
     #   the base name of the directory being uploaded will be used by default.
     # @option custom_opts [String] :timeout_seconds Custom filename. The timeout in seconds.
+    # @option custom_opts [Boolean] :full_response Returns full hash with skylink, merkleroot and bitfield
+    #
+    # @return [String] Returns the sialink (sia://AABBCC) by default
+    # @return [Hash] Hash with full response from skynet including skylink, merkleroot
+    #  bitfield and sialink if :full_response option is given
+    #
+    # @example Returns sialink:
+    #  sia://KAA54bKo-YqFRj345xGXdo9h15k84K8zl7ykrKw8kQyksQ
+    #
+    # @example Full response as hash
+    #
     #
     # rubocop:disable Metrics/AbcSize
-    def upload_file(file, _custom_opts = {})
+    def upload_file(file, custom_opts = {})
       uri = URI.parse(portal)
       url = URI::HTTPS.build(host: uri.host, path: portal_path)
 
@@ -62,7 +73,9 @@ module Skynet
         http.request(req)
       end
 
-      JSON.parse res.body
+      json = JSON.parse res.body
+      sialink = "#{URI_SKYNET_PREFIX}#{json['skylink']}"
+      custom_opts[:full_response] == true ? json.merge({ 'sialink' => sialink }) : sialink
     end
 
     private
