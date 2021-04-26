@@ -22,6 +22,8 @@ Or install it yourself as:
 
 ## Usage
 
+    require 'skynet'
+
 ### Uploading to a Skynet portal
 
 Uploading a single file:
@@ -41,9 +43,11 @@ To install this gem onto your local machine, run `bundle exec rake install`. To 
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/[USERNAME]/sia_skynet.
+Bug reports and pull requests are welcome on GitHub at https://github.com/corck/sia_skynet.
 
 
 ## License
 
 The gem is available as open source under the terms of the [MIT License](https://opensource.org/licenses/MIT).
+
+Copyright, 2021, by Christoph Klocker.
