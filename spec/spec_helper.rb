@@ -21,8 +21,6 @@ RSpec.configure do |config|
     stub_request(:post, /siasky.net/)
       .with(
         headers: {
-          'Accept' => '*/*',
-          'Accept-Encoding' => 'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
           'User-Agent' => Skynet::Client::DEFAULT_USER_AGENT
         }
       )

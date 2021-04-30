@@ -5,7 +5,6 @@ source 'https://rubygems.org'
 # Specify your gem's dependencies in sia_skynet.gemspec
 gemspec
 
-gem 'multipart-post', '~> 2.0'
 gem 'rake', '~> 12.0'
 gem 'typhoeus', '~> 1.4.0'
 

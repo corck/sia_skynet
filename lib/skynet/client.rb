@@ -72,14 +72,13 @@ module Skynet
     #
     #
     def upload_file(file, custom_opts = {})
-      uri = URI.parse(portal)
-      url = URI::HTTPS.build(host: uri.host, path: portal_path)
-
-      req = Net::HTTP::Post::Multipart.new url.path, 'file' => file_io(file, config)
-      req = apply_headers(req)
-      res = Net::HTTP.start(url.host, url.port, use_ssl: true) do |http|
-        http.request(req)
-      end
+      res = Typhoeus.post(
+        "#{portal}/#{portal_path}",
+        headers: default_headers,
+        body: {
+          file: File.open(file, 'r')
+        }
+      )
 
       json = JSON.parse res.body
       sialink = "#{URI_SKYNET_PREFIX}#{json['skylink']}"
