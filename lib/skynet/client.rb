@@ -53,16 +53,22 @@ module Skynet
     # @option custom_opts [Boolean] :full_response Returns full hash with skylink, merkleroot and bitfield
     #
     # @return [String] Returns the sialink (sia://AABBCC) by default
-    # @return [Hash] Hash with full response from skynet including skylink, merkleroot
+    # @return [Hash] response Hash with full response from skynet including skylink, merkleroot
     #  bitfield and sialink if :full_response option is given
+    #  @option response [String] :skylink
     #
-    # @example Returns sialink:
-    #  sia://KAA54bKo-YqFRj345xGXdo9h15k84K8zl7ykrKw8kQyksQ
+    # @example Default response:
+    #  sia://KAA54bKo-YqFRj345xGXdo9h15k.....
     #
     # @example Full response as hash
+    #   {
+    #     "skylink"=>"KAA54bKo-YqFRjDxRxGXdo9h15k8......",
+    #     "merkleroot"=>"39e1b2a....",
+    #     "bitfield"=>40,
+    #     "sialink"=>"sia://KAA54bKo-YqFRjDxRxGXdo9h15k8...."
+    #   }
     #
     #
-    # rubocop:disable Metrics/AbcSize
     def upload_file(file, custom_opts = {})
       uri = URI.parse(portal)
       url = URI::HTTPS.build(host: uri.host, path: portal_path)
@@ -76,6 +82,28 @@ module Skynet
       json = JSON.parse res.body
       sialink = "#{URI_SKYNET_PREFIX}#{json['skylink']}"
       custom_opts[:full_response] == true ? json.merge({ 'sialink' => sialink }) : sialink
+    end
+
+    # Download a file
+    # @param [String] path The local path where the file should be downloaded to.
+    # @param [String] skylink The skylink that should be downloaded. The skylink can contain an optional path.
+    #
+    # @return [String] path Path of the downloaded file
+    def download_file(path, skylink)
+      f = File.open(path, 'w')
+      begin
+        Net::HTTP.start(URI.parse(portal).host, use_ssl: true) do |http|
+          http.request_get("/#{skylink}") do |resp|
+            resp.read_body do |segment|
+              f.write(segment)
+            end
+          end
+        end
+      ensure
+        f.close
+      end
+
+      path
     end
 
     private

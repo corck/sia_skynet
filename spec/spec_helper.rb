@@ -16,11 +16,22 @@ RSpec.configure do |config|
     c.syntax = :expect
   end
 
-  config.before(:each) do
+  config.before do
     # upload stub
     stub_request(:post, /siasky.net/)
       .to_return(status: 200, body: '{"skylink":"KAA54bKo-YqFRj345xGXdo9h15k84K8zl7ykrKw8kQyksQ",
         "merkleroot":"39e1b2a8f98a854630f1471345768f61d7993ce0af3397bca4acac3c910ca4b1",
         "bitfield":40}')
+
+    # download stub
+    stub_request(:get, 'https://siasky.net/KAA54bKo-YqFRjDxRxGXdo9h15k84K8zl7ykrKw8kQyksQ')
+      .with(
+        headers: {
+          'Accept' => '*/*',
+          'Accept-Encoding' => 'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
+          'User-Agent' => 'Ruby'
+        }
+      )
+      .to_return(status: 200, body: 'foo-bar', headers: {})
   end
 end
