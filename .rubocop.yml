@@ -12,3 +12,8 @@ AllCops:
     - 'bin/*'
   TargetRubyVersion: 2.7
   SuggestExtensions: false
+
+Metrics/AbcSize:
+  Enabled: False
+Metrics/MethodLength:
+  Max: 15
