@@ -40,5 +40,15 @@ RSpec.configure do |config|
         }
       )
       .to_return(status: 200, body: 'foo-bar', headers: {})
+
+    stub_request(:head, 'https://siasky.net/KAA54bKo-YqFRjDxRxGXdo9h15k84K8zl7ykrKw8kQyksQ')
+      .with(
+        headers: {
+          'User-Agent' => 'Sia-Agent'
+        }
+      )
+      .to_return(status: 200, body: nil, headers: {
+                   "skynet-file-metadata": '{"filename":"foo.pdf","length":21977,"subfiles":{"kathrin-knight-rider.pdf":{"filename":"kathrin-knight-rider.pdf","contenttype":"application/octet-stream","len":21977}}}'
+                 })
   end
 end

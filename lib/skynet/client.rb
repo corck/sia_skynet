@@ -4,6 +4,7 @@ require 'net/http'
 require 'uri'
 require 'net/http/post/multipart'
 require 'json'
+require 'typhoeus'
 
 module Skynet
   # Client for interacting with Skynet
@@ -95,7 +96,7 @@ module Skynet
       begin
         http = http_request
         request = Net::HTTP::Get.new "/#{skylink}"
-        request = apply_headers request
+        request = apply_headers(request)
         http.request request do |resp|
           resp.read_body do |segment|
             f.write(segment)
@@ -106,6 +107,29 @@ module Skynet
       end
 
       path
+    end
+
+    # Downloads the metadata of a skylink
+    #
+    # @param [String] skylink Skylink of the file
+    #
+    # @return [Hash]
+    #
+    # @example Response
+    #   {
+    #     'filename' => 'foo.pdf',
+    #     'length' => 21_977,
+    #     'subfiles' =>
+    #     { 'foo.pdf' =>
+    #       { 'filename' => 'foo.pdf',
+    #         'contenttype' => 'application/octet-stream',
+    #         'len' => 21_977 } }
+    #   }
+    def get_metadata(skylink)
+      res = Typhoeus::Request.head(
+        "#{portal}/#{skylink}", headers: default_headers
+      )
+      JSON.parse res.headers['skynet-file-metadata']
     end
 
     private
@@ -133,15 +157,22 @@ module Skynet
     end
 
     def http_request
-      uri = URI.parse(portal)
       http = Net::HTTP.new(uri.host, uri.port)
       http.use_ssl = true
       http
     end
 
+    def uri
+      URI.parse(portal)
+    end
+
     def apply_headers(request)
       request['User-Agent'] = user_agent
       request
+    end
+
+    def default_headers
+      { "User-Agent": user_agent }
     end
   end
 end
