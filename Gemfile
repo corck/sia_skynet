@@ -7,6 +7,7 @@ gemspec
 
 gem 'multipart-post', '~> 2.0'
 gem 'rake', '~> 12.0'
+gem 'typhoeus', '~> 1.4.0'
 
 group :test, :development do
   gem 'rspec', '~> 3.0'
