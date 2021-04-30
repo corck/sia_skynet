@@ -13,6 +13,7 @@ module Skynet
   class Client
     DEFAULT_SKYNET_PORTAL_URL = 'https://siasky.net'
     URI_SKYNET_PREFIX = 'sia://'
+    DEFAULT_USER_AGENT = 'Sia-Agent'
 
     attr_reader :user_agent, :portal
     attr_accessor :config
@@ -32,7 +33,7 @@ module Skynet
       @config.merge!(custom_config)
       @portal = config[:custom_portal] || DEFAULT_SKYNET_PORTAL_URL
       @api_key = config[:api_key] || nil
-      @user_agent = config[:custom_user_agent] || 'Sia-Agent'
+      @user_agent = config[:custom_user_agent] || DEFAULT_USER_AGENT
       @on_upload_progress = config[:on_upload_progress]
     end
 
@@ -74,7 +75,7 @@ module Skynet
       url = URI::HTTPS.build(host: uri.host, path: portal_path)
 
       req = Net::HTTP::Post::Multipart.new url.path, 'file' => file_io(file, config)
-      req['User-Agent'] = user_agent
+      req = apply_headers(req)
       res = Net::HTTP.start(url.host, url.port, use_ssl: true) do |http|
         http.request(req)
       end
@@ -92,11 +93,12 @@ module Skynet
     def download_file(path, skylink)
       f = File.open(path, 'w')
       begin
-        Net::HTTP.start(URI.parse(portal).host, use_ssl: true) do |http|
-          http.request_get("/#{skylink}") do |resp|
-            resp.read_body do |segment|
-              f.write(segment)
-            end
+        http = http_request
+        request = Net::HTTP::Get.new "/#{skylink}"
+        request = apply_headers request
+        http.request request do |resp|
+          resp.read_body do |segment|
+            f.write(segment)
           end
         end
       ensure
@@ -128,6 +130,18 @@ module Skynet
       base_path = '/skynet/skyfile/'
       dir = config[:custom_dirname]
       File.join(base_path, dir)
+    end
+
+    def http_request
+      uri = URI.parse(portal)
+      http = Net::HTTP.new(uri.host, uri.port)
+      http.use_ssl = true
+      http
+    end
+
+    def apply_headers(request)
+      request['User-Agent'] = user_agent
+      request
     end
   end
 end
