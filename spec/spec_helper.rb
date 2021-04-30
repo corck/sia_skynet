@@ -34,8 +34,6 @@ RSpec.configure do |config|
     stub_request(:get, 'https://siasky.net/KAA54bKo-YqFRjDxRxGXdo9h15k84K8zl7ykrKw8kQyksQ')
       .with(
         headers: {
-          'Accept' => '*/*',
-          'Accept-Encoding' => 'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
           'User-Agent' => Skynet::Client::DEFAULT_USER_AGENT
         }
       )
@@ -44,7 +42,7 @@ RSpec.configure do |config|
     stub_request(:head, 'https://siasky.net/KAA54bKo-YqFRjDxRxGXdo9h15k84K8zl7ykrKw8kQyksQ')
       .with(
         headers: {
-          'User-Agent' => 'Sia-Agent'
+          'User-Agent' => Skynet::Client::DEFAULT_USER_AGENT
         }
       )
       .to_return(status: 200, body: nil, headers: {

@@ -92,16 +92,19 @@ module Skynet
     #
     # @return [String] path Path of the downloaded file
     def download_file(path, skylink)
-      f = File.open(path, 'w')
+      f = File.open(path, 'wb')
       begin
-        http = http_request
-        request = Net::HTTP::Get.new "/#{skylink}"
-        request = apply_headers(request)
-        http.request request do |resp|
-          resp.read_body do |segment|
-            f.write(segment)
-          end
+        request = Typhoeus::Request.new("#{portal}/#{skylink}", headers: default_headers)
+        request.on_headers do |response|
+          raise 'Request failed' if response.code != 200
         end
+        request.on_body do |chunk|
+          f.write(chunk)
+        end
+        request.on_complete do |_response|
+          f.close
+        end
+        request.run
       ensure
         f.close
       end
