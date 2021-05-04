@@ -50,5 +50,36 @@ RSpec.describe Skynet::Client do
         expect(subject.upload_file(file)).to eq 'sia://KAA54bKo-YqFRj345xGXdo9h15k84K8zl7ykrKw8kQyksQ'
       end
     end
+
+    context 'setting a custom filename on initilize' do
+      let(:subject) { described_class.new(filename: "bar.html")}
+      it 'sends a param filename with the provided filename' do
+        request = double()
+        expect(Typhoeus).to receive(:post).with(
+          "https://siasky.net/skynet/skyfile/",
+          hash_including(
+            params: hash_including(filename: 'bar.html')
+          ),
+          any_args
+        ).and_return(double(body: "{}"))
+        subject.upload_file(file)
+      end
+    end
+
+
+    context 'setting a custom filename' do
+      let(:subject) { described_class.new(filename: "bar.html")}
+      it 'sends a param filename with the provided filename' do
+        request = double()
+        expect(Typhoeus).to receive(:post).with(
+          "https://siasky.net/skynet/skyfile/",
+          hash_including(
+            params: hash_including(filename: 'foo.html')
+          ),
+          any_args
+        ).and_return(double(body: "{}"))
+        subject.upload_file(file, { filename: "foo.html" })
+      end
+    end
   end
 end

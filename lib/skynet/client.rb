@@ -171,7 +171,8 @@ module Skynet
     end
 
     def upload(file, opts)
-      params = opts.filter { |k| default_upload_options.keys.include?(k) }
+      custom_opts = config.merge(opts)
+      params = custom_opts.filter { |k| default_upload_options.keys.include?(k) }
 
       Typhoeus.post(
         "#{portal}#{portal_path}",
