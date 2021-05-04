@@ -2,3 +2,4 @@
 .rvmrc
 .yardoc
 .rspec_status
+.byebug_history
