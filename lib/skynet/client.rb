@@ -36,7 +36,7 @@ module Skynet
       @api_key = config[:api_key] || nil
       Typhoeus::Config.user_agent = config[:user_agent]
       @on_upload_progress = config[:on_upload_progress]
-      Typhoeus::Config.verbose = true # if custom_config[:verbose]
+      Typhoeus::Config.verbose = true if custom_config[:verbose]
     end
 
     # Takes a file path and uploads it
@@ -83,7 +83,7 @@ module Skynet
 
       multipart = prepare_multipart_body(directory)
       header = default_headers.merge({ 'Content-Type' => "multipart/form-data; boundary=#{multipart.boundary}" })
-      puts multipart.to_s
+
       res = Typhoeus::Request.new(
         "#{portal}#{portal_path}",
         method: :post,
