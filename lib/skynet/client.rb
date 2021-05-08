@@ -2,6 +2,8 @@
 
 require 'json'
 require 'typhoeus'
+require 'multipart_body'
+require 'mimemagic'
 
 module Skynet
   # Client for interacting with Skynet
@@ -54,7 +56,7 @@ module Skynet
     # @option custom_opts [Boolean] :full_response Returns full hash with skylink, merkleroot and bitfield
     #
     # @return [String] Returns the sialink (sia://AABBCC) by default
-    # @return [Hash] response Hash with full response from skynet including skylink, merkleroot
+    # @return [Hash] Response Hash with full response from skynet including skylink, merkleroot
     #  bitfield and sialink if :full_response option is given
     #  @option response [String] :skylink
     #
@@ -71,20 +73,26 @@ module Skynet
     #
     #
     def upload_file(file, custom_opts = {})
-      res = upload(file, custom_opts)
-      json = JSON.parse res.body
-      sialink = "#{URI_SKYNET_PREFIX}#{json['skylink']}"
+      res = upload(file, config.merge(custom_opts)).run
 
-      custom_opts[:full_response] == true ? json.merge({ 'sialink' => sialink }) : sialink
+      format_response(res, custom_options)
     end
 
-    # Upload a directory
-    #
-    def upload_directory(path)
-      files = files_to_upload(path)
-      hydra = Typhoeus::Hydra.new
-      files.collect { |f| hydra.queue upload(f) }
-      hydra.run
+    def upload_directory(directory, opts = {})
+      custom_options = config.merge(opts)
+
+      multipart = prepare_multipart_body(directory)
+      header = default_headers.merge({ 'Content-Type' => "multipart/form-data; boundary=#{multipart.boundary}" })
+      puts multipart.to_s
+      res = Typhoeus::Request.new(
+        "#{portal}#{portal_path}",
+        method: :post,
+        params: custom_options.merge(filename: File.basename(directory)),
+        headers: header,
+        body: multipart.to_s
+      ).run
+
+      format_response(res, custom_options)
     end
 
     # Download a file
@@ -133,6 +141,7 @@ module Skynet
       res = Typhoeus::Request.head(
         "#{portal}/#{skylink}", headers: default_headers
       )
+      puts res.headers.inspect
       JSON.parse res.headers['skynet-file-metadata']
     end
 
@@ -144,8 +153,7 @@ module Skynet
       Dir.glob("#{path}/**/*")
          .reject { |fn| File.directory?(fn) }
          .map do |f|
-        relative_path = f.gsub(%r{#{path}/}, '')
-        { path: f, file_name: "#{config[:portal_directory_file_fieldname]}=@.#{relative_path}" }
+        { path: f, relative_path: f.gsub(%r{#{path}/}, '') }
       end
     end
 
@@ -157,7 +165,7 @@ module Skynet
       opts[:user_agent] = DEFAULT_USER_AGENT
       opts[:portal_file_fieldname] = 'file'
       opts[:portal_directory_file_fieldname] = 'files[]'
-      opts[:filename] = ''
+      opts[:filename] = 'file'
       opts[:dirname] = ''
       opts
     end
@@ -170,17 +178,45 @@ module Skynet
       config[:portal]
     end
 
-    def upload(file, opts)
+    def upload(_file, opts = {})
       custom_opts = config.merge(opts)
       params = custom_opts.filter { |k| default_upload_options.keys.include?(k) }
 
-      Typhoeus.post(
+      Typhoeus::Request.new(
         "#{portal}#{portal_path}",
+        method: :post,
         params: params,
         body: {
-          file: File.open(file, 'r')
+          file: upload2_test
         }
       )
+    end
+
+    def default_headers
+      { "User-Agent": DEFAULT_USER_AGENT }
+    end
+
+    def format_response(res, custom_opts = {})
+      json = JSON.parse res.body
+      sialink = "#{URI_SKYNET_PREFIX}#{json['skylink']}"
+
+      custom_opts[:full_response] == true ? json.merge({ 'sialink' => sialink }) : sialink
+    end
+
+    def prepare_multipart_body(directory)
+      files = files_to_upload(directory)
+
+      file_parts = files.inject([]) do |parts, file|
+        ct = MimeMagic.by_path(file[:path]).type
+        begin
+          f = File.open(file[:path], 'r')
+          parts << Part.new(name: 'files[]', body: f.read, filename: file[:relative_path], content_type: ct)
+        ensure
+          f.close
+        end
+      end
+
+      MultipartBody.new(file_parts)
     end
   end
 end

@@ -7,12 +7,14 @@ gemspec
 
 gem 'rake', '~> 12.0'
 gem 'typhoeus', '~> 1.4.0'
+gem 'mimemagic', '~> 0.4.3'
+gem 'multipart_body'
 
 group :test, :development do
   gem 'rspec', '~> 3.0'
   gem 'rubocop'
   gem 'rubocop-rspec'
-  gem 'byebug'
+  gem 'byebug', require: 'byebug'
 end
 
 group :test do

@@ -82,4 +82,15 @@ RSpec.describe Skynet::Client do
       end
     end
   end
+
+
+  context 'uploading a directory' do
+    let(:directory) { File.join(File.dirname(__FILE__), 'uploads/html') }
+
+    it 'sends all files' do
+      expect(subject.upload_directory(directory)).to eq({})
+
+
+    end
+  end
 end
