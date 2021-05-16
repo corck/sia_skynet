@@ -75,11 +75,11 @@ module Skynet
     def upload_file(file, custom_opts = {})
       res = upload(file, config.merge(custom_opts)).run
 
-      format_response(res, custom_options)
+      format_response(res, custom_opts)
     end
 
     def upload_directory(directory, opts = {})
-      custom_options = config.merge(opts)
+      custom_options = filter_upload_options(config.merge(opts))
 
       multipart = prepare_multipart_body(directory)
       header = default_headers.merge({ 'Content-Type' => "multipart/form-data; boundary=#{multipart.boundary}" })
@@ -178,18 +178,29 @@ module Skynet
       config[:portal]
     end
 
-    def upload(_file, opts = {})
+    def upload(file, opts = {})
       custom_opts = config.merge(opts)
       params = custom_opts.filter { |k| default_upload_options.keys.include?(k) }
+
+      begin
+      file = File.open(file, 'rb')
 
       Typhoeus::Request.new(
         "#{portal}#{portal_path}",
         method: :post,
         params: params,
         body: {
-          file: upload2_test
+          file: file
         }
       )
+      ensure
+        file.close
+      end
+    end
+
+    # Filter by available upload options
+    def filter_upload_options(opts)
+      opts.filter { |k| default_upload_options.keys.include?(k) }
     end
 
     def default_headers
@@ -207,10 +218,13 @@ module Skynet
       files = files_to_upload(directory)
 
       file_parts = files.inject([]) do |parts, file|
-        ct = MimeMagic.by_path(file[:path]).type
+        ct = MimeMagic.by_path(file[:path])&.type
         begin
           f = File.open(file[:path], 'r')
-          parts << Part.new(name: 'files[]', body: f.read, filename: file[:relative_path], content_type: ct)
+          parts << Part.new(name: config[:portal_directory_file_fieldname],
+                            body: f.read,
+                            filename: file[:relative_path],
+                            content_type: ct)
         ensure
           f.close
         end

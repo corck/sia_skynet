@@ -35,6 +35,8 @@ RSpec.describe Skynet::Client do
 
   describe 'upload a file' do
     let(:file) { File.path(__FILE__) }
+    let(:response) { double(body: '{}') }
+    let(:request) { double(run: response) }
 
     context 'uploading the file to sia' do
       it 'returns a sia link in the reponse' do
@@ -51,46 +53,42 @@ RSpec.describe Skynet::Client do
       end
     end
 
-    context 'setting a custom filename on initilize' do
-      let(:subject) { described_class.new(filename: "bar.html")}
+    context 'setting a custom filename on initialize' do
+      let(:subject) { described_class.new(filename: 'bar.html') }
       it 'sends a param filename with the provided filename' do
-        request = double()
-        expect(Typhoeus).to receive(:post).with(
-          "https://siasky.net/skynet/skyfile/",
+        expect(Typhoeus::Request).to receive(:new).with(
+          'https://siasky.net/skynet/skyfile/',
           hash_including(
             params: hash_including(filename: 'bar.html')
           ),
           any_args
-        ).and_return(double(body: "{}"))
+        ).and_return(request)
+
         subject.upload_file(file)
       end
     end
 
-
     context 'setting a custom filename' do
-      let(:subject) { described_class.new(filename: "bar.html")}
+      let(:subject) { described_class.new(filename: 'bar.html') }
       it 'sends a param filename with the provided filename' do
-        request = double()
-        expect(Typhoeus).to receive(:post).with(
-          "https://siasky.net/skynet/skyfile/",
+        expect(Typhoeus::Request).to receive(:new).with(
+          'https://siasky.net/skynet/skyfile/',
           hash_including(
             params: hash_including(filename: 'foo.html')
           ),
           any_args
-        ).and_return(double(body: "{}"))
-        subject.upload_file(file, { filename: "foo.html" })
+        ).and_return(request)
+
+        subject.upload_file(file, { filename: 'foo.html' })
       end
     end
   end
-
 
   context 'uploading a directory' do
     let(:directory) { File.join(File.dirname(__FILE__), 'uploads/html') }
 
     it 'sends all files' do
-      expect(subject.upload_directory(directory)).to eq({})
-
-
+      expect(subject.upload_directory(directory)).to eq('sia://KAA54bKo-YqFRj345xGXdo9h15k84K8zl7ykrKw8kQyksQ')
     end
   end
 end
