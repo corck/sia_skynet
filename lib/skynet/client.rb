@@ -145,7 +145,7 @@ module Skynet
         "#{portal}/#{skylink}", headers: default_headers
       )
 
-      raise Skynet::Error, "No metadata returned\n #{res.headers}" unless res.headers['skynet-file-metadata']
+      raise Skynet::NoMetadataError, 'No metadata returned' unless res.headers['skynet-file-metadata']
 
       JSON.parse res.headers['skynet-file-metadata']
     end

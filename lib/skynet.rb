@@ -5,5 +5,6 @@ require 'skynet/client'
 
 module Skynet
   class Error < StandardError; end
-  # Your code goes here...
+
+  class NoMetadataError < Skynet::Error; end
 end
