@@ -183,18 +183,18 @@ module Skynet
       params = custom_opts.filter { |k| default_upload_options.keys.include?(k) }
 
       begin
-      file = File.open(file, 'rb')
+        f = File.open(file, 'rb')
 
-      Typhoeus::Request.new(
-        "#{portal}#{portal_path}",
-        method: :post,
-        params: params,
-        body: {
-          file: file
-        }
-      )
+        Typhoeus::Request.new(
+          "#{portal}#{portal_path}",
+          method: :post,
+          params: params,
+          body: {
+            file: f
+          }
+        )
       ensure
-        file.close
+        f&.close
       end
     end
 
