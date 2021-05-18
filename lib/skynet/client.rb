@@ -101,6 +101,8 @@ module Skynet
     #
     # @return [String] path Path of the downloaded file
     def download_file(path, skylink)
+      skylink = strip_uri_prefix(skylink)
+
       f = File.open(path, 'wb')
       begin
         request = Typhoeus::Request.new("#{portal}/#{skylink}", headers: default_headers)
@@ -138,10 +140,13 @@ module Skynet
     #         'len' => 21_977 } }
     #   }
     def get_metadata(skylink)
+      skylink = strip_uri_prefix(skylink)
       res = Typhoeus::Request.head(
         "#{portal}/#{skylink}", headers: default_headers
       )
-      puts res.headers.inspect
+
+      raise Skynet::Error, "No metadata returned\n #{res.headers}" unless res.headers['skynet-file-metadata']
+
       JSON.parse res.headers['skynet-file-metadata']
     end
 
@@ -231,6 +236,10 @@ module Skynet
       end
 
       MultipartBody.new(file_parts)
+    end
+
+    def strip_uri_prefix(skylink)
+      skylink.delete_prefix(URI_SKYNET_PREFIX)
     end
   end
 end
