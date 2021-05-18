@@ -30,6 +30,16 @@ Uploading a single file:
 
     client = Skynet::Client.new
     client.upload_file '/path/to/file.pdf'
+    => "sia://ZAAZyxRQ7Ixzd3zujn1ly8RA..."
+
+    # if you want to get the full response
+    client.upload_file '/path/to/file.pdf', full_response: true
+    => {
+         "skylink"=>"ZAAZyxRQ7Ixzd3zujn1ly8RA...",
+         "merkleroot"=>"19cb1450ec8981fcc63c73777cee8e7d65cbc44",
+         "bitfield"=>100,
+         "sialink"=>"sia://ZAAZyxRQ7Ixzd3zujn1ly8RA"
+       }
 
 Uploading a directory:
 
