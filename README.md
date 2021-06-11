@@ -61,13 +61,14 @@ Returns the metadata of an upload. Currently quite often no metadata is returned
 
 ## Progress
 
-&#9745; Uploading a file
-&#9745; Uploading a directory
-&#9745; Downloading a file
-&#9745; Downloading a directory
-&#9745; Getting Metadata
-&#9744; Getting Metadata
-&#9744; Getting Metadata
+☑ Uploading a file\
+☑ Uploading a directory\
+☑ Downloading a file\
+☑ Downloading a directory\
+☑ Getting Metadata\
+☐ SkyDB\
+☐ Registry\
+☐ MySky\
 
 ## Contributing
 
