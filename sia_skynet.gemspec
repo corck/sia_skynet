@@ -28,4 +28,8 @@ Gem::Specification.new do |spec|
   spec.bindir        = 'exe'
   spec.executables   = spec.files.grep(%r{^exe/}) { |f| File.basename(f) }
   spec.require_paths = ['lib']
+
+  spec.add_dependency 'typhoeus', '~> 1.4.0'
+  spec.add_dependency 'mimemagic', '~> 0.4.3'
+  spec.add_dependency 'multipart_body', '~> 0.2.1'
 end
