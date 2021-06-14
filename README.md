@@ -1,15 +1,13 @@
 # Skynet
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/sia_skynet`. To experiment with that code, run `bin/console` for an interactive prompt.
-
-TODO: Delete this and the text above, and describe your gem
+Ruby gem for interacting with [Skynet](https://siasky.net/).
 
 ## Installation
 
 Add this line to your application's Gemfile:
 
 ```ruby
-gem 'sia_skynet'
+gem 'skynet_ruby'
 ```
 
 And then execute:
@@ -68,7 +66,8 @@ Returns the metadata of an upload. Currently quite often no metadata is returned
 ☑ Getting Metadata\
 ☐ SkyDB\
 ☐ Registry\
-☐ MySky\
+☐ MySky
+
 
 ## Contributing
 
