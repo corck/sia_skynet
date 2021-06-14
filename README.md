@@ -16,7 +16,7 @@ And then execute:
 
 Or install it yourself as:
 
-    $ gem install sia_skynet
+    $ gem install skynet_ruby
 
 ## Usage
 
