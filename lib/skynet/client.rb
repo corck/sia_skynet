@@ -3,7 +3,7 @@
 require 'json'
 require 'typhoeus'
 require 'multipart_body'
-require 'mimemagic'
+require 'mime/types'
 
 module Skynet
   # Client for interacting with Skynet
@@ -223,7 +223,8 @@ module Skynet
       files = files_to_upload(directory)
 
       file_parts = files.inject([]) do |parts, file|
-        ct = MimeMagic.by_path(file[:path])&.type
+        ct = MIME::Types.type_for(file[:path]).first&.to_s
+
         begin
           f = File.open(file[:path], 'r')
           parts << Part.new(name: config[:portal_directory_file_fieldname],

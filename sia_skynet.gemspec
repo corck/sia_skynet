@@ -30,6 +30,6 @@ Gem::Specification.new do |spec|
   spec.require_paths = ['lib']
 
   spec.add_dependency 'typhoeus', '~> 1.4.0'
-  spec.add_dependency 'mimemagic', '~> 0.4.3'
+  spec.add_dependency 'mime-types', '~> 3.3.0'
   spec.add_dependency 'multipart_body', '~> 0.2.1'
 end
