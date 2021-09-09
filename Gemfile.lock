@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    skynet_ruby (0.2.1)
+    skynet_ruby (0.3.0)
       mime-types (~> 3.3.0)
       multipart_body (~> 0.2.1)
       typhoeus (~> 1.4.0)
