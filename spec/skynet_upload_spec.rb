@@ -82,6 +82,22 @@ RSpec.describe Skynet::Client do
         subject.upload_file(file, { filename: 'foo.html' })
       end
     end
+
+    context 'sets the jwt token for uploading to a skynet account' do
+      let(:jwt) { 'XXXYYYZZZZ' }
+      let(:subject) { described_class.new({ jwt: jwt }) }
+      it 'sends a param filename with the provided filename' do
+        expect(Typhoeus::Request).to receive(:new).with(
+          'https://siasky.net/skynet/skyfile/',
+          hash_including(
+            headers: hash_including('Cookie'=>"skynet-jwt=#{jwt}")
+          ),
+          any_args
+        ).and_return(request)
+
+        subject.upload_file(file)
+      end
+    end
   end
 
   context 'uploading a directory' do

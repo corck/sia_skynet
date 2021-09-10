@@ -29,7 +29,8 @@ module Skynet
     # @option config [String] :portal url to a custom portal, defaults to https://siasky.net
     # @option config [String] :dirname Optional directory name on skynet
     # @option config [Boolean] :verbose Set to true to log network requests
-
+    # @option config [String] :jwt JWT token to upload files to a Skynet account
+    #
     def initialize(custom_config = {})
       @config = default_upload_options
       @config.merge!(custom_config)
@@ -193,6 +194,7 @@ module Skynet
         Typhoeus::Request.new(
           "#{portal}#{portal_path}",
           method: :post,
+          headers: default_headers,
           params: params,
           body: {
             file: f
@@ -209,7 +211,9 @@ module Skynet
     end
 
     def default_headers
-      { "User-Agent": DEFAULT_USER_AGENT }
+      h = {}
+      h.merge!('Cookie' => "skynet-jwt=#{config[:jwt]}") if config[:jwt]
+      h
     end
 
     def format_response(res, custom_opts = {})

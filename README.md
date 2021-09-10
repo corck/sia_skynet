@@ -57,6 +57,16 @@ Returns the metadata of an upload. Currently quite often no metadata is returned
 
     client.get_metadata "ZAAZyxRQ7ImB_...."
 
+#### Persisting Files (Upload to an account)
+
+Files are by default persisted for 90 days if you upload to skynet. If you have an account files can be pinned endlessly. You can read more [here](https://docs.siasky.net/developer-guides/server-hosted-skynet-usage#file-persistence).
+
+To upload an account you need to get a JWT token. You can copy that one from the developer consoles, look for the `skynet-jwt` cookie and copy the value. See [docs](https://docs.siasky.net/developer-guides/server-hosted-skynet-usage#file-persistence).
+
+! JWTs expire after 720 hours and there's no tooling to detect if your JWT is expired.
+
+    Skynet::Client.new(jwt: "XYZ...)
+
 ## Progress
 
 ☑ Uploading a file\
@@ -64,9 +74,11 @@ Returns the metadata of an upload. Currently quite often no metadata is returned
 ☑ Downloading a file\
 ☑ Downloading a directory\
 ☑ Getting Metadata\
+☑ Uploading Files to an account\
 ☐ SkyDB\
 ☐ Registry\
 ☐ MySky
+
 
 
 ## Contributing

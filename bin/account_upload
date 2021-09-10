@@ -1,0 +1,9 @@
+#!/usr/bin/env ruby
+require 'bundler/setup'
+require 'skynet'
+
+raise "Please create a .jwt file with you JWT token" unless File.exists?('.jwt')
+raise "Please provide a file name" unless ARGV[0]
+jwt = File.read('.jwt')
+
+Skynet::Client.new(jwt: jwt, verbose: false).upload_file(ARGV[0])

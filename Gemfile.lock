@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    skynet_ruby (0.2.1)
+    skynet_ruby (0.3.0)
       mime-types (~> 3.3.0)
       multipart_body (~> 0.2.1)
       typhoeus (~> 1.4.0)
@@ -18,7 +18,7 @@ GEM
     diff-lcs (1.4.4)
     ethon (0.14.0)
       ffi (>= 1.15.0)
-    ffi (1.15.0)
+    ffi (1.15.3)
     hashdiff (1.0.1)
     mime-types (3.3.1)
       mime-types-data (~> 3.2015)
